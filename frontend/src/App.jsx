@@ -17,6 +17,8 @@ function App() {
   const itemsPerPage = 10;
   const fileInputRef = useRef(null);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
   const handleFileUpload = async (file) => {
     if (!file) return;
     setLoading(true);
@@ -25,7 +27,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await axios.post('http://localhost:8000/upload_csv', formData)
+      const response = await axios.post(`${API_URL}/upload_csv`, formData);
       setDateRange({ min: response.data.min_date, max: response.data.max_date });
       setStartDate(response.data.min_date);
       setEndDate(response.data.max_date);
@@ -69,7 +71,7 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('http://localhost:8000/analyze', {
+      const response = await axios.post(`${API_URL}/analyze`, {
         startDate: startDate,
         endDate: endDate
       });
@@ -84,7 +86,7 @@ function App() {
 
   const handleExport = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/export', {
+      const response = await axios.get(`${API_URL}/export`, {
         params: { start_date: startDate, end_date: endDate },
         responseType: 'blob'
       });
